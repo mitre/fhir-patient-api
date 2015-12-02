@@ -1,0 +1,30 @@
+{
+    "name" : [
+        {
+            "family" : [
+                "Hawkins"
+            ],
+            "given" : [
+                "Joan"
+            ]
+        }
+    ],
+    "gender" : "female",
+    "birthDate" : {
+        "time" : "1944-05-11T00:00:00.000Z",
+        "precision" : "date"
+    },
+    "maritalStatus" : {
+      "coding": [{"code": "M", "system": "2.16.840.1.113883.4.642.2.19"}]
+    },
+    "address" : [
+        {
+            "line" : [
+                "Elka Court"
+            ],
+            "city" : "Daly City",
+            "state" : "AR",
+            "postalCode" : "0938848"
+        }
+    ]
+}

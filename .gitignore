@@ -1,0 +1,15 @@
+# compiled output
+/dist
+/tmp
+
+# dependencies
+/node_modules
+
+# misc
+/coverage/*
+npm-debug.log
+testem.log
+
+.tmp
+.DS_Store
+*.orig
