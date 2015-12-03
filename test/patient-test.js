@@ -46,7 +46,7 @@ describe('Patient', () => {
     new Fiber(() => {
       let patient = new fhir.Patient(database, patientId);
       let ms = patient.maritalStatus();
-      assert.equal('M', ms);
+      assert.equal('M', ms.code());
       done();
     }).run();
   });
