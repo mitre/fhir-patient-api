@@ -1,0 +1,19 @@
+{
+    "type" : [
+        {
+            "coding" : [
+                {
+                    "system" : "http://www.ama-assn.org/go/cpt",
+                    "code" : "99213"
+                }
+            ],
+            "text" : "Office Visit"
+        }
+    ],
+    "period" : {
+        "start" : {
+            "time" : "2015-10-12T00:00:00.000Z",
+            "precision" : "date"
+        }
+    }
+}

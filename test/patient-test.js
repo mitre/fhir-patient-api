@@ -9,17 +9,41 @@ let fs = require('fs');
 
 let database = null;
 let patientId = new mongo.ObjectId();
+let encounterId = new mongo.ObjectId();
+
+function loadFixture(fixtureFile, id) {
+  let fixtureJSON = fs.readFileSync(fixtureFile);
+  let f = JSON.parse(fixtureJSON);
+  f._id = id;
+  convertDates(f);
+  return f;
+}
+
+function convertDates(obj) {
+  for (let propertyName in obj) {
+    if (obj.hasOwnProperty(propertyName) && obj[propertyName].hasOwnProperty("time")) {
+      obj[propertyName].time = new Date(obj[propertyName].time);
+    } else {
+      if (typeof obj[propertyName] === "object") {
+        convertDates(obj[propertyName]);
+      }
+    }
+  }
+}
 
 describe('Patient', () => {
   before((done) => {
     MongoClient.connect('mongodb://127.0.0.1:27017/fhir-test', function(err, db) {
       database = db;
-      let patientFixture = fs.readFileSync("./test/fixtures/patient.json");
-      let p = JSON.parse(patientFixture);
-      p.birthDate.time = new Date(p.birthDate.time);
-      p._id = patientId;
+
+      let p = loadFixture("./test/fixtures/patient.json", patientId);
+
+      let e = loadFixture("./test/fixtures/office-encounter.json", encounterId);
+      e.patient = {'referenceid': patientId};
       db.collection('patients').insertOne(p, {}, () => {
-        done();
+        db.collection('encounters').insertOne(e, {}, () => {
+          done();
+        });
       });
     });
   });
@@ -51,8 +75,18 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has encounters', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let encounters = patient.encounters();
+      assert.equal(1, encounters.length);
+      done();
+    }).run();
+  });
+
   after(() => {
     database.collection("patients").drop();
+    database.collection("encounters").drop();
     database.close();
   });
 });
