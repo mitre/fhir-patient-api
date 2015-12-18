@@ -6,10 +6,12 @@ let Fiber = require('fibers');
 let mongo = require('mongodb');
 let MongoClient = mongo.MongoClient;
 let fs = require('fs');
+let async = require('async');
 
 let database = null;
 let patientId = new mongo.ObjectId();
 let encounterId = new mongo.ObjectId();
+let medId = new mongo.ObjectId();
 
 function loadFixture(fixtureFile, id) {
   let fixtureJSON = fs.readFileSync(fixtureFile);
@@ -37,14 +39,16 @@ describe('Patient', () => {
       database = db;
 
       let p = loadFixture("./test/fixtures/patient.json", patientId);
-
       let e = loadFixture("./test/fixtures/office-encounter.json", encounterId);
+      let m = loadFixture("./test/fixtures/med-statement.json", medId);
+
       e.patient = {'referenceid': patientId};
-      db.collection('patients').insertOne(p, {}, () => {
-        db.collection('encounters').insertOne(e, {}, () => {
-          done();
-        });
-      });
+      m.patient = {'referenceid': patientId};
+      async.parallel([
+        (callback) => {db.collection('patients').insertOne(p, {}, () => {callback(null);});},
+        (callback) => {db.collection('encounters').insertOne(e, {}, () => {callback(null);});},
+        (callback) => {db.collection('medicationstatements').insertOne(m, {}, () => {callback(null);});}
+      ], (err) => {done(err);});
     });
   });
 
@@ -80,6 +84,19 @@ describe('Patient', () => {
       let patient = new fhir.Patient(database, patientId);
       let encounters = patient.encounters();
       assert.equal(1, encounters.length);
+      let e = encounters[0];
+      assert.equal(new Date("2015-10-12T00:00:00.000Z").getTime(), e.startDate().getTime());
+      done();
+    }).run();
+  });
+
+  it('has medications', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let medications = patient.medications();
+      assert.equal(1, medications.length);
+      let m = medications[0];
+      assert.equal(new Date("2011-11-15T00:00:00.000Z").getTime(), m.startDate().getTime());
       done();
     }).run();
   });
@@ -87,6 +104,7 @@ describe('Patient', () => {
   after(() => {
     database.collection("patients").drop();
     database.collection("encounters").drop();
+    database.collection("medicationstatements").drop();
     database.close();
   });
 });
