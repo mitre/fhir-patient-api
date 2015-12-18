@@ -12,6 +12,7 @@ let database = null;
 let patientId = new mongo.ObjectId();
 let encounterId = new mongo.ObjectId();
 let medId = new mongo.ObjectId();
+let conditionId = new mongo.ObjectId();
 
 function loadFixture(fixtureFile, id) {
   let fixtureJSON = fs.readFileSync(fixtureFile);
@@ -41,13 +42,16 @@ describe('Patient', () => {
       let p = loadFixture("./test/fixtures/patient.json", patientId);
       let e = loadFixture("./test/fixtures/office-encounter.json", encounterId);
       let m = loadFixture("./test/fixtures/med-statement.json", medId);
+      let c = loadFixture("./test/fixtures/condition.json", conditionId);
 
       e.patient = {'referenceid': patientId};
       m.patient = {'referenceid': patientId};
+      c.patient = {'referenceid': patientId};
       async.parallel([
         (callback) => {db.collection('patients').insertOne(p, {}, () => {callback(null);});},
         (callback) => {db.collection('encounters').insertOne(e, {}, () => {callback(null);});},
-        (callback) => {db.collection('medicationstatements').insertOne(m, {}, () => {callback(null);});}
+        (callback) => {db.collection('medicationstatements').insertOne(m, {}, () => {callback(null);});},
+        (callback) => {db.collection('conditions').insertOne(c, {}, () => {callback(null);});}
       ], (err) => {done(err);});
     });
   });
@@ -101,10 +105,22 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has conditions', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let conditions = patient.conditions();
+      assert.equal(1, conditions.length);
+      let c = conditions[0];
+      assert.equal(new Date("2011-06-03T00:00:00.000Z").getTime(), c.startDate().getTime());
+      done();
+    }).run();
+  });
+
   after(() => {
     database.collection("patients").drop();
     database.collection("encounters").drop();
     database.collection("medicationstatements").drop();
+    database.collection("conditions").drop();
     database.close();
   });
 });
