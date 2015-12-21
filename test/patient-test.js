@@ -13,6 +13,7 @@ let patientId = new mongo.ObjectId();
 let encounterId = new mongo.ObjectId();
 let medId = new mongo.ObjectId();
 let conditionId = new mongo.ObjectId();
+let procedureId = new mongo.ObjectId();
 
 function loadFixture(fixtureFile, id) {
   let fixtureJSON = fs.readFileSync(fixtureFile);
@@ -43,15 +44,18 @@ describe('Patient', () => {
       let e = loadFixture("./test/fixtures/office-encounter.json", encounterId);
       let m = loadFixture("./test/fixtures/med-statement.json", medId);
       let c = loadFixture("./test/fixtures/condition.json", conditionId);
+      let procedure = loadFixture("./test/fixtures/procedure.json", procedureId);
 
       e.patient = {'referenceid': patientId};
       m.patient = {'referenceid': patientId};
       c.patient = {'referenceid': patientId};
+      procedure.subject = {'referenceid': patientId};
       async.parallel([
         (callback) => {db.collection('patients').insertOne(p, {}, () => {callback(null);});},
         (callback) => {db.collection('encounters').insertOne(e, {}, () => {callback(null);});},
         (callback) => {db.collection('medicationstatements').insertOne(m, {}, () => {callback(null);});},
-        (callback) => {db.collection('conditions').insertOne(c, {}, () => {callback(null);});}
+        (callback) => {db.collection('conditions').insertOne(c, {}, () => {callback(null);});},
+        (callback) => {db.collection('procedures').insertOne(procedure, {}, () => {callback(null);});}
       ], (err) => {done(err);});
     });
   });
@@ -112,6 +116,19 @@ describe('Patient', () => {
       assert.equal(1, conditions.length);
       let c = conditions[0];
       assert.equal(new Date("2011-06-03T00:00:00.000Z").getTime(), c.startDate().getTime());
+      assert.equal("255604002", c.severity().code());
+      done();
+    }).run();
+  });
+
+  it('has procedures', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let procedures = patient.procedures();
+      assert.equal(1, procedures.length);
+      let p = procedures[0];
+      assert.equal(new Date("2013-01-28T13:31:00+01:00").getTime(), p.startDate().getTime());
+      assert.equal("272676008", p.site().code());
       done();
     }).run();
   });
@@ -121,6 +138,7 @@ describe('Patient', () => {
     database.collection("encounters").drop();
     database.collection("medicationstatements").drop();
     database.collection("conditions").drop();
+    database.collection("procedures").drop();
     database.close();
   });
 });

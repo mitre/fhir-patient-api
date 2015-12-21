@@ -8,6 +8,15 @@
         ],
         "text" : "Hypertension"
     },
+    "severity": {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "255604002",
+          "display": "Mild"
+        }
+      ]
+    },
     "onsetDateTime" : {
         "time" : "2011-06-03T00:00:00.000Z",
         "precision" : "date"
