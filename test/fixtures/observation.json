@@ -1,0 +1,20 @@
+{
+    "_id" : "5616b6981cd462440e000006",
+    "code" : {
+        "coding" : [
+            {
+                "system" : "http://loinc.org",
+                "code" : "1558-6"
+            }
+        ],
+        "text" : "Fasting Glucose"
+    },
+    "effectiveDateTime" : {
+        "time" : "2014-10-11T00:00:00.000Z",
+        "precision" : "date"
+    },
+    "valueQuantity" : {
+        "value" : 247.0,
+        "unit" : "mg/dL"
+    }
+}

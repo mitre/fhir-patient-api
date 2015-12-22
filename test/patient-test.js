@@ -14,6 +14,7 @@ let encounterId = new mongo.ObjectId();
 let medId = new mongo.ObjectId();
 let conditionId = new mongo.ObjectId();
 let procedureId = new mongo.ObjectId();
+let observationId =  new mongo.ObjectId();
 
 function loadFixture(fixtureFile, id) {
   let fixtureJSON = fs.readFileSync(fixtureFile);
@@ -45,17 +46,20 @@ describe('Patient', () => {
       let m = loadFixture("./test/fixtures/med-statement.json", medId);
       let c = loadFixture("./test/fixtures/condition.json", conditionId);
       let procedure = loadFixture("./test/fixtures/procedure.json", procedureId);
+      let o = loadFixture("./test/fixtures/observation.json", observationId);
 
       e.patient = {'referenceid': patientId};
       m.patient = {'referenceid': patientId};
       c.patient = {'referenceid': patientId};
       procedure.subject = {'referenceid': patientId};
+      o.subject = {'referenceid': patientId};
       async.parallel([
         (callback) => {db.collection('patients').insertOne(p, {}, () => {callback(null);});},
         (callback) => {db.collection('encounters').insertOne(e, {}, () => {callback(null);});},
         (callback) => {db.collection('medicationstatements').insertOne(m, {}, () => {callback(null);});},
         (callback) => {db.collection('conditions').insertOne(c, {}, () => {callback(null);});},
-        (callback) => {db.collection('procedures').insertOne(procedure, {}, () => {callback(null);});}
+        (callback) => {db.collection('procedures').insertOne(procedure, {}, () => {callback(null);});},
+        (callback) => {db.collection('observations').insertOne(o, {}, () => {callback(null);});}
       ], (err) => {done(err);});
     });
   });
@@ -133,12 +137,26 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has observations', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let observations = patient.results();
+      assert.equal(1, observations.length);
+      let o = observations[0];
+      assert.equal(new Date("2014-10-11T00:00:00.000Z").getTime(), o.date().getTime());
+      assert.equal(247.0, o.values()[0].scalar());
+      assert.equal("mg/dL", o.values()[0].units());
+      done();
+    }).run();
+  });
+
   after(() => {
     database.collection("patients").drop();
     database.collection("encounters").drop();
     database.collection("medicationstatements").drop();
     database.collection("conditions").drop();
     database.collection("procedures").drop();
+    database.collection("observations").drop();
     database.close();
   });
 });
