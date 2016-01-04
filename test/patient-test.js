@@ -15,6 +15,7 @@ let medId = new mongo.ObjectId();
 let conditionId = new mongo.ObjectId();
 let procedureId = new mongo.ObjectId();
 let observationId =  new mongo.ObjectId();
+let immunizationId =  new mongo.ObjectId();
 
 function loadFixture(fixtureFile, id) {
   let fixtureJSON = fs.readFileSync(fixtureFile);
@@ -47,19 +48,22 @@ describe('Patient', () => {
       let c = loadFixture("./test/fixtures/condition.json", conditionId);
       let procedure = loadFixture("./test/fixtures/procedure.json", procedureId);
       let o = loadFixture("./test/fixtures/observation.json", observationId);
+      let i = loadFixture("./test/fixtures/immunization.json", immunizationId);
 
       e.patient = {'referenceid': patientId};
       m.patient = {'referenceid': patientId};
       c.patient = {'referenceid': patientId};
       procedure.subject = {'referenceid': patientId};
       o.subject = {'referenceid': patientId};
+      i.patient = {'referenceid': patientId};
       async.parallel([
         (callback) => {db.collection('patients').insertOne(p, {}, () => {callback(null);});},
         (callback) => {db.collection('encounters').insertOne(e, {}, () => {callback(null);});},
         (callback) => {db.collection('medicationstatements').insertOne(m, {}, () => {callback(null);});},
         (callback) => {db.collection('conditions').insertOne(c, {}, () => {callback(null);});},
         (callback) => {db.collection('procedures').insertOne(procedure, {}, () => {callback(null);});},
-        (callback) => {db.collection('observations').insertOne(o, {}, () => {callback(null);});}
+        (callback) => {db.collection('observations').insertOne(o, {}, () => {callback(null);});},
+        (callback) => {db.collection('immunizations').insertOne(i, {}, () => {callback(null);});}
       ], (err) => {done(err);});
     });
   });
@@ -150,6 +154,17 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has immunizations', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let immunizations = patient.immunizations();
+      assert.equal(1, immunizations.length);
+      let i = immunizations[0];
+      assert.equal(new Date("2013-01-10").getTime(), i.date().getTime());
+      done();
+    }).run();
+  });
+
   after(() => {
     database.collection("patients").drop();
     database.collection("encounters").drop();
@@ -157,6 +172,7 @@ describe('Patient', () => {
     database.collection("conditions").drop();
     database.collection("procedures").drop();
     database.collection("observations").drop();
+    database.collection("immunizations").drop();
     database.close();
   });
 });
