@@ -95,6 +95,14 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has a given name', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      assert.equal('Joan', patient.given());
+      done();
+    }).run();
+  });
+
   it('has encounters', (done) => {
     new Fiber(() => {
       let patient = new fhir.Patient(database, patientId);
