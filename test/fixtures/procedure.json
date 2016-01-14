@@ -24,7 +24,17 @@
       ]
     }
   ],
-
+  "outcome":
+    {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "385669000",
+          "display": "successful"
+        }
+      ]
+    }
+  ,
   "performedPeriod": {
     "start": {"time": "2013-01-28T13:31:00+01:00", "precision": "timestamp"},
     "end": {"time": "2013-01-28T14:27:00+01:00", "precision": "timestamp"}

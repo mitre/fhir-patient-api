@@ -145,6 +145,7 @@ describe('Patient', () => {
       let p = procedures[0];
       assert.equal(new Date("2013-01-28T13:31:00+01:00").getTime(), p.startDate().getTime());
       assert.equal("272676008", p.site().code());
+      assert.equal("385669000", p.values()[0].code())
       done();
     }).run();
   });
