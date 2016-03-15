@@ -174,6 +174,41 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has json property for clinical data elements ', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let immunizations = patient.immunizations();
+      let observations = patient.results();
+      let procedures = patient.procedures();
+      let conditions = patient.conditions();
+      let medications = patient.medications();
+      let encounters = patient.encounters();
+
+      let e = encounters[0];
+      let m = medications[0];
+      let c = conditions[0];
+      let p = procedures[0];
+      let o = observations[0];
+      let i = immunizations[0];
+
+      assert.equal(e.fhirModel, e.json);
+      assert.equal(m.fhirModel, m.json);
+      assert.equal(c.fhirModel, c.json);
+      assert.equal(p.fhirModel, p.json);
+      assert.equal(o.fhirModel, o.json);
+      assert.equal(i.fhirModel, i.json);
+
+      assert.notEqual(e.fhirModel, null);
+      assert.notEqual(m.fhirModel, null);
+      assert.notEqual(c.fhirModel, null);
+      assert.notEqual(p.fhirModel, null);
+      assert.notEqual(o.fhirModel, null);
+      assert.notEqual(i.fhirModel, null);
+
+      done();
+    }).run();
+  });
+
   after(() => {
     database.collection("patients").drop();
     database.collection("encounters").drop();
