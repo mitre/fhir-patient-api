@@ -109,6 +109,7 @@ describe('Patient', () => {
       let encounters = patient.encounters();
       assert.equal(1, encounters.length);
       let e = encounters[0];
+      assert(e.id)
       assert.equal(new Date("2015-10-12T00:00:00.000Z").getTime(), e.startDate().getTime());
       done();
     }).run();
