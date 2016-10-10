@@ -210,6 +210,26 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has a race', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let race = patient.race();
+      assert.equal('2115-4', race.code());
+      assert.equal('CDC Race', race.codeSystemName());
+      done();
+    }).run();
+  });
+
+  it('has an ethnicity', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      let ethnicity = patient.ethnicity();
+      assert.equal('2186-5', ethnicity.code());
+      assert.equal('CDC Ethnicity', ethnicity.codeSystemName());
+      done();
+    }).run();
+  });
+
   after(() => {
     database.collection("patients").drop();
     database.collection("encounters").drop();

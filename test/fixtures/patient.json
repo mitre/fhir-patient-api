@@ -26,5 +26,33 @@
             "state" : "AR",
             "postalCode" : "0938848"
         }
+    ],
+    "extension": [
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/us-core-race",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/v3/Race",
+              "code": "2115-4",
+              "display": "Polish"
+            }
+          ],
+          "text": "race"
+        }
+      },
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/us-core-ethnicity",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/v3/Ethnicity",
+              "code": "2186-5",
+              "display": "Nonhispanic"
+            }
+          ],
+          "text": "ethnicity"
+        }
+      }
     ]
 }
