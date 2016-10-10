@@ -213,7 +213,9 @@ describe('Patient', () => {
   it('has a race', (done) => {
     new Fiber(() => {
       let patient = new fhir.Patient(database, patientId);
-      assert.equal('2115-4', patient.race());
+      let race = patient.race();
+      assert.equal('2115-4', race.code());
+      assert.equal('CDC Race', race.codeSystemName());
       done();
     }).run();
   });
@@ -221,7 +223,9 @@ describe('Patient', () => {
   it('has an ethnicity', (done) => {
     new Fiber(() => {
       let patient = new fhir.Patient(database, patientId);
-      assert.equal('2186-5', patient.ethnicity());
+      let ethnicity = patient.ethnicity();
+      assert.equal('2186-5', ethnicity.code());
+      assert.equal('CDC Ethnicity', ethnicity.codeSystemName());
       done();
     }).run();
   });
