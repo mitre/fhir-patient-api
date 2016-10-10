@@ -210,6 +210,22 @@ describe('Patient', () => {
     }).run();
   });
 
+  it('has a race', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      assert.equal('2115-4', patient.race());
+      done();
+    }).run();
+  });
+
+  it('has an ethnicity', (done) => {
+    new Fiber(() => {
+      let patient = new fhir.Patient(database, patientId);
+      assert.equal('2186-5', patient.ethnicity());
+      done();
+    }).run();
+  });
+
   after(() => {
     database.collection("patients").drop();
     database.collection("encounters").drop();
