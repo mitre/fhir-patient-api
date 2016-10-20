@@ -52,7 +52,7 @@ describe('Patient', () => {
 
       e.patient = {'referenceid': patientId};
       m.patient = {'referenceid': patientId};
-      c.patient = {'referenceid': patientId};
+      c.subject = {'referenceid': patientId};
       procedure.subject = {'referenceid': patientId};
       o.subject = {'referenceid': patientId};
       i.patient = {'referenceid': patientId};

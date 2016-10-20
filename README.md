@@ -18,6 +18,11 @@ The code in this package takes care of loading all of the resources associated
 with a patient from different collections so that the clinical quality measure
 calculation does not need to concern itself with the underlying implementation.
 
+Change Log
+----------
+
+* v0.2.0 (October 20, 2016) - Support for FHIR STU3
+
 License
 -------
 
