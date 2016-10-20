@@ -5,7 +5,7 @@
   "contributors": [
     {"name": "Rob Dingwell", "email": "rob@mitre.org"}
   ],
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "APSL-2.0",
   "repository": {"type": "git", "url": "https://github.com/mitre/fhir-patient-api.git"},
   "scripts": {"test": "mocha"},
