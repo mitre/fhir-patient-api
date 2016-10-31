@@ -18,6 +18,18 @@ The code in this package takes care of loading all of the resources associated
 with a patient from different collections so that the clinical quality measure
 calculation does not need to concern itself with the underlying implementation.
 
+Setup
+-----
+```
+yarn install
+```
+
+Test
+----
+```
+yarn run mocha
+```
+
 Change Log
 ----------
 

@@ -1,20 +1,20 @@
 {
   "name": "fhir-patient-api",
-  "description": "A FHIR based implementation of the patient API used by the quality-measure-engine",
-  "author": {"name": "Andy Gregorowicz", "email": "andy@mitre.org"},
-  "contributors": [
-    {"name": "Rob Dingwell", "email": "rob@mitre.org"}
-  ],
   "version": "0.2.0",
-  "license": "APSL-2.0",
-  "repository": {"type": "git", "url": "https://github.com/mitre/fhir-patient-api.git"},
-  "scripts": {"test": "mocha"},
+  "description": "A FHIR based implementation of the patient API used by the quality-measure-engine",
+  "main": "lib/patient.js",
+  "repository": {
+    "url": "https://github.com/mitre/fhir-patient-api.git",
+    "type": "git"
+  },
+  "author": "Andy Gregorowicz <andy@mitre.org>",
+  "license": "Apache 2.0",
   "dependencies": {
-    "mongodb": ">=2.0.49",
-    "fibers": ">=1.0.4"
+    "fibers": "^1.0.15",
+    "mongodb": "^2.2.11"
   },
   "devDependencies": {
-    "mocha": ">=2.3.4",
-    "async": ">=1.5.0"
+    "async": "^2.1.2",
+    "mocha": "^3.1.2"
   }
 }
